@@ -5,17 +5,16 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom'
 // Side-effecting import for rt-theme/globals
 import 'rt-theme'
 
-// import { MainRoute, NotificationRoute, OrderTicketRoute, SimpleLauncher, StyleguideRoute } from './routes'
-import { OrderTicketRoute } from './routes/OrderTicketRoute'
-import { StyleguideRoute } from './routes/StyleguideRoute'
+import { MainRoute, NotificationRoute, OrderTicketRoute, SimpleLauncher, StyleguideRoute } from './routes'
 
 ReactDOM.render(
   <BrowserRouter>
     <Switch>
-      {/* <Route path="/launcher" component={SimpleLauncher} /> */}
+      <Route path="/launcher" component={SimpleLauncher} />
       <Route path="/styleguide" component={StyleguideRoute} />
       <Route path="/order-ticket" component={OrderTicketRoute} />
-      <Route path="/" component={OrderTicketRoute} />
+      <Route path="/notification" component={NotificationRoute} />
+      <Route component={MainRoute} />
     </Switch>
   </BrowserRouter>,
   document.getElementById('root'),
