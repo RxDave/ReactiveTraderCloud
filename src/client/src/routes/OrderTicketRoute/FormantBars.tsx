@@ -9,6 +9,7 @@ export interface Props {
   scale?: number
   radius?: number
   analyser?: AnalyserNode
+  color?: (magnitude: number) => string | any
 }
 
 interface State {
@@ -30,7 +31,7 @@ interface State {
   data: Float32Array
 }
 
-export class FormantBars extends Component<Props, Partial<State>> {
+class FormantBars extends Component<Props, Partial<State>> {
   state: Partial<State> = {
     data: new Float32Array(),
   }
@@ -44,10 +45,7 @@ export class FormantBars extends Component<Props, Partial<State>> {
     scale: 2,
   }
 
-  static getDerivedStateFromProps(
-    { analyser, count, scale, width, height, radius, gap }: Props,
-    { data, bar, grid }: State,
-  ) {
+  static getDerivedStateFromProps({ analyser, count, scale, width, height, radius, gap }: Props, { data, bar }: State) {
     let state = null
 
     if (analyser.frequencyBinCount !== data.length) {
@@ -109,7 +107,7 @@ export class FormantBars extends Component<Props, Partial<State>> {
     }
 
     const {
-      props: { analyser },
+      props: { analyser, color },
       state: { bar, grid },
       canvas,
     } = this
@@ -148,6 +146,7 @@ export class FormantBars extends Component<Props, Partial<State>> {
     )
 
     // data = _.chunk(data, 2).map(([a, b], i, c) => (a + b) / 2) as any
+    // @ts-ignore
     data = _.chunk(data, Math.round(data.length / bar.count)).map((vs, i, c) => _.sum(vs) / vs.length) as any
 
     if (canvas && canvas.getContext) {
@@ -161,6 +160,7 @@ export class FormantBars extends Component<Props, Partial<State>> {
         const height = _.min([magnitude, bar.height * 1.5])
 
         canvasCtx.fillStyle =
+          (color && color(_.clamp(magnitude / 200, 0, 1))) ||
           'rgb(' + Math.floor((0.75 + Math.sin(Math.PI * (magnitude / 50))) * magnitude + 95 / 2) + ',148,245)'
 
         roundRect({
@@ -224,3 +224,6 @@ export function roundRect({ ctx, x, y, width, height, radius, fill, stroke }: an
     ctx.stroke()
   }
 }
+
+export default FormantBars
+export { FormantBars }

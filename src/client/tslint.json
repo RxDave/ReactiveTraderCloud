@@ -19,8 +19,13 @@
     "ban-types": false,
     "no-var-requires": false,
     "max-classes-per-file": [false, 1],
-    "no-void-expression": false,
-    "no-shadowed-variable": false
+    "ordered-imports": [
+      true,
+      {
+        "import-sources-order": "any",
+        "named-imports-order": "any"
+      }
+    ]
   },
   "defaultSeverity": "warning",
   "linterOptions": {

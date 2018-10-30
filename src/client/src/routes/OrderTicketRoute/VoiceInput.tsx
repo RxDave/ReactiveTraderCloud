@@ -1,26 +1,26 @@
 import _ from 'lodash'
 import React from 'react'
 import { HotKeys } from 'react-hotkeys'
-import { faPlay, faChevronCircleRight } from '@fortawesome/free-solid-svg-icons'
+import { mix } from 'polished'
+
+import { faChevronCircleRight, faPlay } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-import { colors, keyframes, styled, Styled } from 'rt-theme'
 import { Block } from '../StyleguideRoute/styled'
+import { colors, keyframes, styled, Styled } from 'rt-theme'
 
-import formantSVGURL from './assets/formant.svg'
-import MicrophoneIcon from './assets/Microphone'
-
-import { FormantBars } from './FormantBars'
-
-import AudioContext from './AudioContext'
+import { AudioContext } from './AudioContext'
+import { BlobDownload } from './devtools/BlobDownload'
 import { ChannelMerger } from './ChannelMerger'
 import { MediaPlayer } from './MediaPlayer'
 import { Microphone } from './Microphone'
-import { TranscriptionSession, SessionResult, SessionResultData } from './TranscriptionSession'
 import { ScribeSession } from './ScribeSession'
 import { UserMedia, UserMediaState } from './UserMedia'
+import { TranscriptionSession, SessionResult, SessionResultData } from './TranscriptionSession'
+import { Timer } from './Timer'
 
-import BlobDownload from './devtools/BlobDownload'
+import FormantBars from './FormantBars'
+import MicrophoneIcon from './assets/Microphone'
 
 type SourceType = 'microphone' | 'sample'
 interface Props {
@@ -40,17 +40,20 @@ interface State {
   outputs: AudioDestinationNode[]
   source?: SourceType
   userPermissionGranted: boolean
-  // data
+  // connection
   requestSession: boolean
   sessionActive: boolean
   sessionCount: number
   sessionConnected: boolean
   sessionInstance?: any
+  sessionError?: any
+  // data
   transcripts: any
   // testing
   useNext?: boolean
 }
 
+// tslint:disable-next-line
 export interface VoiceInputResult extends SessionResultData {}
 
 export class VoiceInput extends React.PureComponent<Props, State> {
@@ -123,6 +126,7 @@ export class VoiceInput extends React.PureComponent<Props, State> {
     return next
   }
 
+  // @ts-ignore
   componentDidUpdate(prevProps: Props, prevState: State, snapshot: State) {
     if (snapshot != null) {
       this.setState(snapshot)
@@ -130,18 +134,21 @@ export class VoiceInput extends React.PureComponent<Props, State> {
   }
 
   toggle = () => {
-    this.setState(({ sessionActive, sessionCount, transcripts }: any) => ({
-      sessionActive: !sessionActive,
-      sessionCount: !sessionActive ? sessionCount + 1 : sessionCount,
-      transcripts: sessionActive ? transcripts : [],
-    }))
+    this.setState(({ sessionActive, sessionCount, transcripts }) => {
+      return {
+        sessionActive: !sessionActive,
+        sessionCount: !sessionActive ? sessionCount + 1 : sessionCount,
+        sessionError: null,
+        transcripts: sessionActive ? transcripts : [],
+      }
+    })
   }
 
   onPermission = ({ ok }: UserMediaState) => {
     this.setState({ userPermissionGranted: ok })
   }
 
-  onSessionStart = (sessionInstance: any) => {
+  onSessionStart = () => {
     if (this.props.onStart) {
       this.props.onStart()
     }
@@ -155,18 +162,18 @@ export class VoiceInput extends React.PureComponent<Props, State> {
     }
   }
 
-  onSessionError = () => {
+  onSessionError = (event: any) => {
     this.setState({
+      sessionError: event,
       sessionConnected: false,
-      sessionInstance: null,
     })
-
-    if (this.props.onEnd) {
-      this.props.onEnd()
-    }
   }
 
-  onSessionEnd = (sessionInstance: any) => {
+  onSessionEnd: () => void = async () => {
+    if ((await new Promise<State>(resolve => this.setState(resolve))).sessionError) {
+      return null
+    }
+
     this.setState({
       sessionActive: false,
       sessionConnected: null,
@@ -199,15 +206,17 @@ export class VoiceInput extends React.PureComponent<Props, State> {
       sessionInstance,
       sessionCount,
       sessionActive,
+      sessionError,
       sessionConnected,
       transcripts,
     } = this.state
 
     return (
       <React.Fragment>
-        {// Pure data components for session connection and audio graph
-
-        sessionCount > 0 && (
+        {
+          // Pure data components for session connection and audio graph
+        }
+        {sessionCount > 0 && (
           <ChannelMerger context={context} outputs={outputs}>
             {({ destination }) => (
               <React.Fragment>
@@ -278,8 +287,12 @@ export class VoiceInput extends React.PureComponent<Props, State> {
           </ChannelMerger>
         )}
 
+        {////////////////////////////////////
+        // Reset after error and user message
+        sessionError && <Timer duration={5000} timeout={this.toggle} />}
+
         {
-          // Rendered Output
+          // Rendered output
         }
         <Root
           bg="primary.4"
@@ -296,7 +309,7 @@ export class VoiceInput extends React.PureComponent<Props, State> {
               fg={
                 sessionActive === false
                   ? 'primary.1'
-                  : userPermissionGranted === false
+                  : sessionError || userPermissionGranted === false
                     ? 'accents.aware.base'
                     : 'accents.primary.base'
               }
@@ -308,7 +321,26 @@ export class VoiceInput extends React.PureComponent<Props, State> {
           {!sessionInstance ? null : (
             <React.Fragment>
               <Fill />
-              <FormantBars analyser={analyser} count={5} gap={1.5} width={3.5} height={40} />
+              <FormantBars
+                analyser={analyser}
+                count={5}
+                gap={1.5}
+                width={3.5}
+                height={40}
+                // @ts-ignore
+                color={
+                  !sessionError
+                    ? null
+                    : magnitude => {
+                        // @ts-ignore
+                        return mix(
+                          1 - Math.sin(magnitude * magnitude),
+                          colors.accents.aware.base,
+                          colors.accents.bad.base,
+                        )
+                      }
+                }
+              />
               <Fill />
             </React.Fragment>
           )}
@@ -403,13 +435,6 @@ export const Formant: Styled<{ sessionInstance: boolean }> = styled.div`
   [fill] {
     fill: ${({ sessionInstance, theme }) => (sessionInstance ? theme.accents.primary.base : theme.secondary.base)};
   }
-`
-
-export const StaicFormant = styled.div`
-  height: 2rem;
-  width: 2rem;
-  background-image: url(${formantSVGURL});
-  background-size: cover;
 `
 
 const MicrophoneButton: Styled<{ active: boolean }> = styled(Block)`
