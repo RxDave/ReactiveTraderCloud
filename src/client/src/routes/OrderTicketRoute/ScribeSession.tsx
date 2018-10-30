@@ -8,6 +8,7 @@ import { Timer } from './Timer'
 
 import { WebSocketConnection, WebSocketEventHandles } from './WebSocketConnection'
 
+// tslint:disable-next-line
 export interface SessionResultData extends GreenKeyRecognition.Result {}
 export interface SessionResult {
   data: GreenKeyRecognition.Result
@@ -171,16 +172,16 @@ export class ScribeSession extends PureComponent<Props, State> {
     if (this.unmounting) {
       console.error('Unexpected call to ScribeSession.onError')
       return
-    } else {
-      this.setState({
-        error: true,
-        socket: null,
-        connected: false,
-      })
+    }
 
-      if (this.props.onError) {
-        this.props.onError({ ok: false, source: 'socket', error })
-      }
+    this.setState({
+      error: true,
+      socket: null,
+      connected: false,
+    })
+
+    if (this.props.onError) {
+      this.props.onError({ ok: false, source: 'socket', error })
     }
   }
 
