@@ -1,8 +1,8 @@
 import { combineEpics } from 'redux-observable'
-import { publishPositionUpdateEpic } from './analyticsServiceEpic'
+import { publishPositionUpdateEpic, formBubbleChartDataEpic } from './analyticsServiceEpic'
 import { analyticsServiceEpic } from './epics'
 
-const epics = [analyticsServiceEpic]
+const epics = [analyticsServiceEpic, formBubbleChartDataEpic]
 
 if (typeof fin !== 'undefined') {
   epics.push(publishPositionUpdateEpic)

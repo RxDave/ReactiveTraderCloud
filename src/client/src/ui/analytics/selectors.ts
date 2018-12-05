@@ -9,7 +9,7 @@ const selectCurrencyPairs = createSelector([getCurrencyPairs], currencyPairs => 
 
 const getCurrentPositions = ({ analyticsService }: GlobalState) => analyticsService && analyticsService.currentPositions
 const selectPositionsChartModel = createSelector([getCurrentPositions], currentPositions =>
-  getPositionsChartModel(currentPositions)
+  getPositionsChartModel(currentPositions),
 )
 
 const getHistory = ({ analyticsService }: GlobalState) => analyticsService && analyticsService.history
@@ -19,4 +19,10 @@ const getConnectionStatus = ({ compositeStatusService }: GlobalState) =>
   compositeStatusService.analytics.connectionStatus
 const selectAnalyticsStatus = createSelector(getConnectionStatus, status => status)
 
-export { selectPositionsChartModel, selectPnlChartModel, selectAnalyticsStatus, selectCurrencyPairs }
+const getBubbleChart = ({ analyticsService }: GlobalState) => {
+  console.log(analyticsService)
+  return analyticsService.bubbleChart
+}
+const selectBubbleChart = createSelector(getBubbleChart, data => data)
+
+export { selectPositionsChartModel, selectPnlChartModel, selectAnalyticsStatus, selectCurrencyPairs, selectBubbleChart }

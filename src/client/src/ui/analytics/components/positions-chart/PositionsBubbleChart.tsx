@@ -7,15 +7,7 @@ import reactSizeme from 'react-sizeme'
 
 import { CurrencyPairPosition } from '../../model'
 import { CurrencyPairs } from '../Analytics'
-import {
-  createScales,
-  drawCircles,
-  drawLabels,
-  getPositionsDataFromSeries,
-  getPositionValue,
-  getRadius,
-  updateNodes,
-} from './chartUtil'
+import { createScales, drawCircles, drawLabels, getPositionValue, getRadius, updateNodes } from './chartUtil'
 
 export interface PositionsBubbleChartProps {
   data: CurrencyPairPosition[]
@@ -25,6 +17,7 @@ export interface PositionsBubbleChartProps {
     width: number
     height: number
   }
+  bubbleChart: any
 }
 
 interface State {
@@ -63,7 +56,8 @@ export class PositionsBubbleChart extends React.Component<PositionsBubbleChartPr
   }
 
   shouldRedrawChart(nextProps = this.props) {
-    const positionsData = getPositionsDataFromSeries(nextProps.data, nextProps.currencyPairs)
+    console.log(this.props)
+    const positionsData = this.props.bubbleChart
     const existingPositionsData = this.state.prevPositionsData
     const nodesChanged = positionsData.length !== existingPositionsData.length
     return nodesChanged
@@ -73,7 +67,7 @@ export class PositionsBubbleChart extends React.Component<PositionsBubbleChartPr
     if (this.state.nodes.length === 0 && nextProps.data.length > 0) {
       this.updateNodes(nextProps.data)
     }
-    const positionsData = getPositionsDataFromSeries(nextProps.data, nextProps.currencyPairs)
+    const positionsData = this.props.bubbleChart
     const existingPositionsData = this.state.prevPositionsData
 
     // positions data has changed on the existing nodes
@@ -104,7 +98,7 @@ export class PositionsBubbleChart extends React.Component<PositionsBubbleChartPr
 
   updateNodes(data: CurrencyPairPosition[]) {
     let nodes = this.state.nodes
-    const positionsData = getPositionsDataFromSeries(data, this.props.currencyPairs)
+    const positionsData = this.props.bubbleChart
 
     nodes = map(positionsData, (dataObj: any, index: number) => {
       const color = dataObj.baseTradedAmount > 0 ? colors.accents.good.base : colors.accents.bad.base

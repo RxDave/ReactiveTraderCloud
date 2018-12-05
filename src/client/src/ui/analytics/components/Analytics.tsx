@@ -21,6 +21,7 @@ export interface Props {
   currencyPairs: CurrencyPairs
   pnlChartModel?: PNLChartModel
   positionsChartModel?: PositionsChartModel
+  bubbleChart: any
   onPopoutClick?: () => void
 }
 
@@ -39,7 +40,7 @@ export default class Analytics extends React.Component<Props> {
   }
 
   render() {
-    const { canPopout, currencyPairs, pnlChartModel, positionsChartModel, onPopoutClick } = this.props
+    const { canPopout, currencyPairs, pnlChartModel, positionsChartModel, onPopoutClick, bubbleChart } = this.props
 
     const lastPos = (pnlChartModel && pnlChartModel.lastPos) || 0
     const lastPosition = lastPositionWithDirection(lastPos)
@@ -63,7 +64,11 @@ export default class Analytics extends React.Component<Props> {
               <React.Fragment>
                 <Title>Positions</Title>
                 <BubbleChart>
-                  <PositionsBubbleChart data={positionsChartModel.seriesData} currencyPairs={currencyPairs} />
+                  <PositionsBubbleChart
+                    bubbleChart={bubbleChart}
+                    data={positionsChartModel.seriesData}
+                    currencyPairs={currencyPairs}
+                  />
                 </BubbleChart>
                 <Title>Profit and Loss</Title>
                 <AnalyticsBarChart
