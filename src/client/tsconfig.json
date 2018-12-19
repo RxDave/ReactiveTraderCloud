@@ -20,7 +20,9 @@
     "noUnusedLocals": true,
     "skipLibCheck": true,
     "baseUrl": "src",
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "importHelpers": true
   },
   "exclude": [
     "node_modules",

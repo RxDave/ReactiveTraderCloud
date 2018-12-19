@@ -1,11 +1,4 @@
-import { combineEpics } from 'redux-observable'
-import { publishPositionUpdateEpic } from './analyticsServiceEpic'
-import { analyticsServiceEpic } from './epics'
+import { combineLogicsIntoEpic } from 'Logic'
+import { enabledLogic, businessLogic } from './logic'
 
-const epics = [analyticsServiceEpic]
-
-if (typeof fin !== 'undefined') {
-  epics.push(publishPositionUpdateEpic)
-}
-
-export default combineEpics(...epics)
+export default combineLogicsIntoEpic(enabledLogic, businessLogic)
