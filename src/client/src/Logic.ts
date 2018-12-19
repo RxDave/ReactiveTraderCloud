@@ -45,7 +45,7 @@ export function combineLogicsIntoEpic(enabledLogic: Logic, ...logics: Logic[]): 
     return connections.pipe(
       combineLatest<boolean, boolean, boolean>(
         enableds,
-        (serviceAvailable, ...logicEnableds) => serviceAvailable && logicEnableds.every(b => b),
+        (serviceAvailable, ...enabledValues) => serviceAvailable && enabledValues.every(b => b),
       ),
       distinctUntilChanged(),
       switchMap(ready => (ready ? logicActions : EMPTY)),
@@ -59,7 +59,7 @@ function suppressNonActions<T>(observable: Observable<T>): Observable<T> {
 }
 
 function toBooleans<T>(observable: Observable<T>): Observable<boolean> {
-  return observable.pipe(map(notification => (typeof notification === 'boolean' ? notification as boolean : true)))
+  return observable.pipe(map(notification => (typeof notification === 'boolean' ? (notification as boolean) : true)))
 }
 
 function pushObservables<T>(
