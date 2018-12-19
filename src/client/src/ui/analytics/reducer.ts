@@ -1,29 +1,25 @@
-import { CONNECTION_ACTION_TYPES, DisconnectAction } from 'rt-actions'
-import { ANALYTICS_ACTION_TYPES, AnalyticsActions } from './actions'
-import { CurrencyPairPosition, HistoricPosition } from './model'
+import { ServiceConnectionStatus } from 'rt-types'
+import { ANALYTICS_ACTION_TYPES } from './actions'
+import { CurrencyPairState } from 'shell'
+import { CurrencyPairPosition, HistoricPosition, PNLChartModel, PositionsChartModel } from './model'
+import { getPnlChartModel } from './model/pnlChartModel'
+import { getPositionsChartModel } from './model/positionsChartModel'
+import createConnectedReducer from 'commonReducers'
 
 export interface AnalyticsState {
   currentPositions: CurrencyPairPosition[]
   history: HistoricPosition[]
+  chartModel: PNLChartModel
+  positionsModel: PositionsChartModel
+  status: ServiceConnectionStatus
+  currencyPairs: CurrencyPairState
 }
 
-const INITIAL_STATE: AnalyticsState = {
+export default createConnectedReducer(ANALYTICS_ACTION_TYPES.ANALYTICS_SERVICE, {
   currentPositions: [],
-  history: []
-}
-
-export const analyticsReducer = (
-  state: AnalyticsState = INITIAL_STATE,
-  action: AnalyticsActions | DisconnectAction
-): AnalyticsState => {
-  switch (action.type) {
-    case ANALYTICS_ACTION_TYPES.ANALYTICS_SERVICE:
-      return { ...state, ...action.payload }
-    case CONNECTION_ACTION_TYPES.DISCONNECT_SERVICES:
-      return INITIAL_STATE
-    default:
-      return state
-  }
-}
-
-export default analyticsReducer
+  history: [],
+  chartModel: getPnlChartModel([]),
+  positionsModel: getPositionsChartModel([]),
+  status: ServiceConnectionStatus.DISCONNECTED,
+  currencyPairs: {},
+})

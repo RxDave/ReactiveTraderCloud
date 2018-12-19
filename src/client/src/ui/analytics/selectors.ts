@@ -1,22 +1,15 @@
 import { createSelector } from 'reselect'
-import { GlobalState } from 'StoreTypes'
-
 import { getPnlChartModel } from './model/pnlChartModel'
 import { getPositionsChartModel } from './model/positionsChartModel'
+import { PositionUpdates } from './model/index'
 
-const getCurrencyPairs = ({ currencyPairs }: GlobalState) => currencyPairs
-const selectCurrencyPairs = createSelector([getCurrencyPairs], currencyPairs => currencyPairs)
-
-const getCurrentPositions = ({ analyticsService }: GlobalState) => analyticsService && analyticsService.currentPositions
-const selectPositionsChartModel = createSelector([getCurrentPositions], currentPositions =>
-  getPositionsChartModel(currentPositions)
+const selectPositionsChartModel = createSelector(
+  [(updates: PositionUpdates) => updates.currentPositions],
+  currentPositions => getPositionsChartModel(currentPositions),
 )
 
-const getHistory = ({ analyticsService }: GlobalState) => analyticsService && analyticsService.history
-const selectPnlChartModel = createSelector([getHistory], history => getPnlChartModel(history))
+const selectPnlChartModel = createSelector([(updates: PositionUpdates) => updates.history], history =>
+  getPnlChartModel(history),
+)
 
-const getConnectionStatus = ({ compositeStatusService }: GlobalState) =>
-  compositeStatusService.analytics.connectionStatus
-const selectAnalyticsStatus = createSelector(getConnectionStatus, status => status)
-
-export { selectPositionsChartModel, selectPnlChartModel, selectAnalyticsStatus, selectCurrencyPairs }
+export { selectPositionsChartModel, selectPnlChartModel }

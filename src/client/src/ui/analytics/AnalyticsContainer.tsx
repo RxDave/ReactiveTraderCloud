@@ -6,7 +6,6 @@ import { Environment } from 'rt-system'
 import { GlobalState } from 'StoreTypes'
 import { AnalyticsActions } from './actions'
 import Analytics from './components'
-import { selectAnalyticsStatus, selectCurrencyPairs, selectPnlChartModel, selectPositionsChartModel } from './selectors'
 interface AnalyticsContainerOwnProps {
   onPopoutClick?: () => void
   tornOff?: boolean
@@ -36,10 +35,10 @@ const AnalyticsContainer: React.SFC<AnalyticsContainerProps> = ({
 )
 
 const mapStateToProps = (state: GlobalState) => ({
-  pnlChartModel: selectPnlChartModel(state),
-  positionsChartModel: selectPositionsChartModel(state),
-  status: selectAnalyticsStatus(state),
-  currencyPairs: selectCurrencyPairs(state),
+  pnlChartModel: state.analyticsService.chartModel,
+  positionsChartModel: state.analyticsService.positionsModel,
+  status: state.analyticsService.status,
+  currencyPairs: state.analyticsService.currencyPairs,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
