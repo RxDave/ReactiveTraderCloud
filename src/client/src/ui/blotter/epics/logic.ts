@@ -1,3 +1,4 @@
+import _ from 'lodash'
 import { Action } from 'redux'
 import { ofType } from 'redux-observable'
 import { interval } from 'rxjs'
@@ -8,6 +9,7 @@ import { CurrencyPair, CurrencyPairMap, Trade, Trades, TradeStatus } from 'rt-ty
 import BlotterService from '../blotterService'
 import moment from 'moment'
 import numeral from 'numeral'
+import { selectBlotterRows } from '../selectors'
 
 type SubscribeToBlotterAction = ReturnType<typeof BlotterActions.subscribeToBlotterAction>
 type NewTradesAction = ReturnType<typeof BlotterActions.createNewTradesAction>
@@ -18,7 +20,19 @@ export const enabledLogic: Logic = function(action$) {
 
 export const businessLogic: Logic = function*(action$, state$, { loadBalancedServiceStub, platform }, finEnabled) {
   const blotterService = new BlotterService(loadBalancedServiceStub)
-  yield blotterService.getTradesStream().pipe(map(BlotterActions.createNewTradesAction))
+  yield blotterService.getTradesStream().pipe(
+    map(data => {
+      const trades: Trades = {
+        ...state$.value.blotterService.trades,
+        ..._.keyBy(data.trades, `tradeId`),
+      }
+
+      return BlotterActions.createNewTradesAction({
+        trades,
+        rows: selectBlotterRows(trades),
+      })
+    }),
+  )
 
   if (finEnabled) {
     yield action$.pipe(

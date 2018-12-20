@@ -6,7 +6,6 @@ import { Environment } from 'rt-system'
 import { GlobalState } from 'StoreTypes'
 import { BlotterActions } from './actions'
 import Blotter from './components'
-import { selectBlotterRows, selectBlotterStatus } from './selectors'
 
 interface BlotterContainerOwnProps {
   onPopoutClick?: () => void
@@ -34,8 +33,8 @@ const BlotterContainer: React.SFC<BlotterContainerProps> = ({
 )
 
 const mapStateToProps = (state: GlobalState) => ({
-  rows: selectBlotterRows(state),
-  status: selectBlotterStatus(state),
+  rows: state.blotterService.rows,
+  status: state.compositeStatusService.blotter.connectionStatus,
 })
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

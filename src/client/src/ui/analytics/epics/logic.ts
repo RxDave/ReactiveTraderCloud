@@ -8,14 +8,11 @@ import { CurrencyPairPosition } from '../model'
 import { selectPnlChartModel, selectPositionsChartModel } from '../selectors'
 import AnalyticsService from '../analyticsService'
 
+type SubscribeToAnalyticsAction = ReturnType<typeof AnalyticsActions.subcribeToAnalytics>
+type FetchAnalyticsAction = ReturnType<typeof AnalyticsActions.refreshAnalyticsUI>
+type ReferenceServiceAction = ReturnType<typeof ReferenceActions.createReferenceServiceAction>
+
 const CURRENCY: string = 'USD'
-
-const { refreshAnalyticsUI, subcribeToAnalytics } = AnalyticsActions
-type SubscribeToAnalyticsAction = ReturnType<typeof subcribeToAnalytics>
-type FetchAnalyticsAction = ReturnType<typeof refreshAnalyticsUI>
-
-const { createReferenceServiceAction } = ReferenceActions
-type ReferenceServiceAction = ReturnType<typeof createReferenceServiceAction>
 
 export const enabledLogic: Logic = function*(action$) {
   yield action$.pipe(ofType<Action, ReferenceServiceAction>(REF_ACTION_TYPES.REFERENCE_SERVICE))
@@ -26,7 +23,7 @@ export const businessLogic: Logic = function*(action$, state$, { loadBalancedSer
   const analyticsService = new AnalyticsService(loadBalancedServiceStub)
   yield analyticsService.getAnalyticsStream(CURRENCY).pipe(
     map(data =>
-      refreshAnalyticsUI({
+      AnalyticsActions.refreshAnalyticsUI({
         ...data,
         positionsModel: selectPositionsChartModel(data),
         chartModel: selectPnlChartModel(data),
