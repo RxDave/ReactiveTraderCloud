@@ -60,7 +60,7 @@ export function combineLogicsIntoEpic(enabledLogic: Logic, ...logics: Logic[]): 
 
 function suppressNonActions<T>(observable: Observable<T>): Observable<T> {
   // This filter is semantically equiv to: "notification instanceof Action", but that doesn't work in TypeScript because Action is an interface.
-  return observable.pipe(filter(notification => 'type' in notification))
+  return observable.pipe(filter(notification => typeof notification === 'object' && 'type' in notification))
 }
 
 function toBooleans<T>(observable: Observable<T>): Observable<boolean> {
