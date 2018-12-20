@@ -3,17 +3,17 @@ import { ActionWithPayload } from 'rt-util'
 
 export default function createConnectedReducer<TUpdateAction extends string, TState>(
   updateActionType: TUpdateAction,
-  initialState: TState,
+  initialAndDisconnectedState: TState,
 ) {
   return <TAction extends ActionWithPayload<TUpdateAction, TState>>(
-    state: TState = initialState,
+    state: TState = initialAndDisconnectedState,
     action: TAction | DisconnectAction,
   ): TState => {
     switch (action.type) {
       case updateActionType:
         return (action as TAction).payload
       case CONNECTION_ACTION_TYPES.DISCONNECT_SERVICES:
-        return initialState
+        return initialAndDisconnectedState
       default:
         return state
     }
