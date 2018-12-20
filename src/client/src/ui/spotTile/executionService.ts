@@ -6,7 +6,7 @@ import {
   createExecuteTradeResponse,
   createExecuteTradeResponseForError,
   ExecuteTradeRequest,
-} from '../model/executeTradeRequest'
+} from './model/executeTradeRequest'
 interface RawTradeReponse {
   Trade: TradeRaw
 }

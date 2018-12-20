@@ -11,7 +11,12 @@ type Logic = (
   state$: StateObservable<GlobalState>,
   dependencies: ApplicationDependencies,
   finEnabled: boolean,
-) => IterableIterator<Observable<Action>> | IterableIterator<Observable<any>> | Observable<Action> | Observable<any>
+) =>
+  | IterableIterator<Observable<Action>>
+  | IterableIterator<Observable<any>>
+  | Observable<Action>
+  | Observable<any>
+  | null
 export default Logic
 
 export function combineLogicsIntoEpic(enabledLogic: Logic, ...logics: Logic[]): ApplicationEpic {
@@ -65,6 +70,7 @@ function toBooleans<T>(observable: Observable<T>): Observable<boolean> {
 function pushObservables<T>(
   collection: Array<Observable<T>>,
   oneOrMoreObservables:
+    | null
     | Observable<any>
     | Observable<Action<any>>
     | IterableIterator<Observable<Action<any>>>
@@ -73,7 +79,7 @@ function pushObservables<T>(
 ) {
   if (oneOrMoreObservables instanceof Observable) {
     collection.push(transform(oneOrMoreObservables))
-  } else {
+  } else if (oneOrMoreObservables) {
     for (const observable of oneOrMoreObservables) {
       collection.push(transform(observable))
     }

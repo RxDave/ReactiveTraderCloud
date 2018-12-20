@@ -1,8 +1,8 @@
 import { debounceWithSelector, retryConstantly, ServiceClient } from 'rt-system'
 import { Observable } from 'rxjs'
 import { map, retryWhen, scan, share } from 'rxjs/operators'
-import { PriceMovementTypes } from '../model/priceMovementTypes'
-import { SpotPriceTick } from '../model/spotPriceTick'
+import { PriceMovementTypes } from './model/priceMovementTypes'
+import { SpotPriceTick } from './model/spotPriceTick'
 
 const LOG_NAME = 'Pricing Service:'
 const getPriceUpdatesOperationName = 'getPriceUpdates'
