@@ -2,8 +2,10 @@ import { action, ActionUnion } from 'rt-util'
 import { ExecuteTradeRequest, ExecuteTradeResponse } from './model/executeTradeRequest'
 import { SpotPriceTick } from './model/spotPriceTick'
 import { TradeExectionMeta } from './model/spotTileUtils'
+import { SpotTileState } from './spotTileReducer'
 
 export enum TILE_ACTION_TYPES {
+  TRADE_UPDATED = '@ReactiveTraderCloud/TRADE_UPDATED',
   EXECUTE_TRADE = '@ReactiveTraderCloud/EXECUTE_TRADE',
   TRADE_EXECUTED = '@ReactiveTraderCloud/TRADE_EXECUTED',
   DISPLAY_CURRENCY_CHART = '@ReactiveTraderCloud/DISPLAY_CURRENCY_CHART',
@@ -14,6 +16,7 @@ export enum TILE_ACTION_TYPES {
 }
 
 export const SpotTileActions = {
+  update: action<TILE_ACTION_TYPES.TRADE_UPDATED, SpotTileState>(TILE_ACTION_TYPES.TRADE_UPDATED),
   executeTrade: action<TILE_ACTION_TYPES.EXECUTE_TRADE, ExecuteTradeRequest, TradeExectionMeta | null>(
     TILE_ACTION_TYPES.EXECUTE_TRADE,
   ),

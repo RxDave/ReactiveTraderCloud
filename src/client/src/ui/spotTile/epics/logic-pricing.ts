@@ -1,11 +1,12 @@
 import { Action } from 'redux'
 import { ofType } from 'redux-observable'
 import Logic from 'Logic'
-import { map, mergeMap, tap } from 'rxjs/operators'
+import { filter, map, mergeMap, tap } from 'rxjs/operators'
 import { CurrencyPairMap } from 'rt-types'
 import { SpotTileActions, TILE_ACTION_TYPES } from '../actions'
 import { SpotPriceTick } from '../model/spotPriceTick'
 import PricingService from '../pricingService'
+import { createUpdateTradeDataOn } from './logic-spotTile'
 
 type SubscribeToSpotTileAction = ReturnType<typeof SpotTileActions.subscribeToSpotTile>
 type PriceUpdateAction = ReturnType<typeof SpotTileActions.priceUpdateAction>
@@ -16,6 +17,15 @@ export const pricingLogic: Logic = function*(
   { loadBalancedServiceStub, referenceDataService, platform },
   finEnabled,
 ) {
+  const updateTradeDataOn = createUpdateTradeDataOn(action$, state$)
+
+  yield updateTradeDataOn<PriceUpdateAction, SpotPriceTick>(
+    TILE_ACTION_TYPES.SPOT_PRICES_UPDATE,
+    payload => ({ price: payload }),
+    payload => payload.symbol,
+    filter(action => typeof state$.value.spotTilesData[action.payload.symbol] !== 'undefined'),
+  )
+
   const pricingService = new PricingService(loadBalancedServiceStub)
 
   yield action$.pipe(
