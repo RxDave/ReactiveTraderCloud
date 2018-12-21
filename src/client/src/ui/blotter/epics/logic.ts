@@ -9,7 +9,6 @@ import { CurrencyPair, CurrencyPairMap, Trade, Trades, TradeStatus } from 'rt-ty
 import BlotterService from '../blotterService'
 import moment from 'moment'
 import numeral from 'numeral'
-import { selectBlotterRows } from '../selectors'
 
 type SubscribeToBlotterAction = ReturnType<typeof BlotterActions.subscribeToBlotterAction>
 type NewTradesAction = ReturnType<typeof BlotterActions.createNewTradesAction>
@@ -27,9 +26,11 @@ export const businessLogic: Logic = function*(action$, state$, { loadBalancedSer
         ..._.keyBy(data.trades, `tradeId`),
       }
 
+      // TODO: Instead of reversing the entire array each time, find all of the data.trades by their keys and update
+      // them specifically; i.e., partial-batch updates.
       return BlotterActions.createNewTradesAction({
         trades,
-        rows: selectBlotterRows(trades),
+        rows: (Object.values(trades) as Trade[]).reverse(),
       })
     }),
   )

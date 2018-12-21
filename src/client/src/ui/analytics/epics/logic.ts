@@ -5,7 +5,8 @@ import Logic from 'Logic'
 import { REF_ACTION_TYPES, ReferenceActions } from 'rt-actions'
 import { ANALYTICS_ACTION_TYPES, AnalyticsActions } from '../actions'
 import { CurrencyPairPosition } from '../model'
-import { selectPnlChartModel, selectPositionsChartModel } from '../selectors'
+import { getPnlChartModel } from '../model/pnlChartModel'
+import { getPositionsChartModel } from '../model/positionsChartModel'
 import AnalyticsService from '../analyticsService'
 
 type SubscribeToAnalyticsAction = ReturnType<typeof AnalyticsActions.subcribeToAnalytics>
@@ -25,8 +26,8 @@ export const businessLogic: Logic = function*(action$, state$, { loadBalancedSer
     map(data =>
       AnalyticsActions.refreshAnalyticsUI({
         ...data,
-        positionsModel: selectPositionsChartModel(data),
-        chartModel: selectPnlChartModel(data),
+        positionsModel: getPositionsChartModel(data.currentPositions),
+        chartModel: getPnlChartModel(data.history),
         status: state$.value.compositeStatusService.analytics.connectionStatus,
         currencyPairs: state$.value.currencyPairs,
       }),
