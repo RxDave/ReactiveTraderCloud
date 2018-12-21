@@ -1,7 +1,7 @@
 import { Action } from 'redux'
 import { ofType } from 'redux-observable'
 import Logic from 'Logic'
-import { filter, map, mergeMap, tap } from 'rxjs/operators'
+import { map, mergeMap, tap } from 'rxjs/operators'
 import { CurrencyPairMap } from 'rt-types'
 import { SpotTileActions, TILE_ACTION_TYPES } from '../actions'
 import { SpotPriceTick } from '../model/spotPriceTick'
@@ -23,7 +23,7 @@ export const pricingLogic: Logic = function*(
     TILE_ACTION_TYPES.SPOT_PRICES_UPDATE,
     payload => ({ price: payload }),
     payload => payload.symbol,
-    filter(action => typeof state$.value.spotTilesData[action.payload.symbol] !== 'undefined'),
+    payload => state$.value.spotTilesData[payload.symbol] !== 'undefined',
   )
 
   const pricingService = new PricingService(loadBalancedServiceStub)
