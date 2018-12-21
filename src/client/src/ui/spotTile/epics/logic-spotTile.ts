@@ -98,22 +98,22 @@ export const createUpdateTradeDataOn = (
   state$: StateObservable<GlobalState>,
 ) => <TAction extends ActionWithPayload<string, TPayload>, TPayload>(
   actionType: string,
-  data: Partial<SpotTileData> | ((payload: TPayload) => Partial<SpotTileData>),
+  data: Partial<SpotTileData> | ((payload: TPayload, key: string) => Partial<SpotTileData>),
   idSelector?: (payload: TPayload) => string,
-  shouldMap?: (payload: TPayload) => boolean,
+  shouldMap?: (payload: TPayload, key: string) => boolean,
 ): Observable<Action<any>> => {
   const operators: Array<OperatorFunction<any, any>> = [ofType<Action, TAction>(actionType)]
   operators.push(
     map(action => {
-      const key = typeof action.payload === 'string' ? action.payload : idSelector(action.payload)
+      const key = typeof action.payload === 'string' || !idSelector ? action.payload : idSelector(action.payload)
       return SpotTileActions.update(
-        shouldMap && !shouldMap(action.payload)
+        shouldMap && !shouldMap(action.payload, key)
           ? state$.value.spotTilesData
           : {
               ...state$.value.spotTilesData,
               [key]: {
                 ...state$.value.spotTilesData[key],
-                ...(typeof data === 'function' ? data(action.payload) : data),
+                ...(typeof data === 'function' ? data(action.payload, key) : data),
               },
             },
       )
