@@ -5,7 +5,7 @@ import Logic from 'Logic'
 import { REF_ACTION_TYPES, ReferenceActions } from 'rt-actions'
 import { ANALYTICS_ACTION_TYPES, AnalyticsActions } from '../actions'
 import { CurrencyPairPosition } from '../model'
-import { getPnlChartModel } from '../model/pnlChartModel'
+import { getModel } from '../model/AnalyticsLineChartModel'
 import { getPositionsChartModel } from '../model/positionsChartModel'
 import AnalyticsService from '../analyticsService'
 
@@ -27,7 +27,7 @@ export const businessLogic: Logic = function*(action$, state$, { loadBalancedSer
       AnalyticsActions.refreshAnalyticsUI({
         ...data,
         positionsModel: getPositionsChartModel(data.currentPositions),
-        chartModel: getPnlChartModel(data.history),
+        chartModel: getModel(data.history),
         status: state$.value.compositeStatusService.analytics.connectionStatus,
         currencyPairs: state$.value.currencyPairs,
       }),
