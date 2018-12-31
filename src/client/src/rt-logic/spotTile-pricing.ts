@@ -21,9 +21,9 @@ export const pricingLogic: Logic = function*(
 
   yield updateTradeDataOn<PriceUpdateAction, SpotPriceTick>(
     TILE_ACTION_TYPES.SPOT_PRICES_UPDATE,
-    payload => ({ price: payload }),
-    payload => payload.symbol,
-    payload => state$.value.spotTilesData[payload.symbol] !== 'undefined',
+    tick => ({ price: tick }),
+    tick => tick.symbol,
+    tick => state$.value.spotTilesData[tick.symbol] !== 'undefined',
   )
 
   const pricingService = new PricingService(loadBalancedServiceStub)
