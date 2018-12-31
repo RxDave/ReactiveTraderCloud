@@ -7,7 +7,7 @@ import { GlobalState } from 'StoreTypes'
 import { SpotTileActions } from './actions'
 import { TileSwitch } from './components'
 import { ExecuteTradeRequest } from './model/executeTradeRequest'
-import { selectCurrencyPair, selectExecutionStatus, selectPricingStatus, selectSpotTileData } from './selectors'
+import { selectCurrencyPair, selectSpotTileData } from './selectors'
 
 export interface SpotTileContainerOwnProps {
   id: string
@@ -46,8 +46,8 @@ const mapDispatchToProps = (dispatch: Dispatch, ownProps: SpotTileContainerOwnPr
 })
 
 const makeMapStateToProps = () => (state: GlobalState, ownProps: SpotTileContainerOwnProps) => ({
-  pricingStatus: selectPricingStatus(state),
-  executionStatus: selectExecutionStatus(state),
+  pricingStatus: state.compositeStatusService.pricing.connectionStatus,
+  executionStatus: state.compositeStatusService.execution.connectionStatus,
   currencyPair: selectCurrencyPair(state, ownProps),
   spotTileData: selectSpotTileData(state, ownProps),
 })

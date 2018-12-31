@@ -8,16 +8,4 @@ const selectCurrencyPair = createSelector([getCurrencyPair], currencyPair => cur
 const getSpotTileData = (state: GlobalState, props: SpotTileContainerOwnProps) => state.spotTilesData[props.id]
 const selectSpotTileData = createSelector([getSpotTileData], spotTileData => spotTileData)
 
-const getPricingStatus = (state: GlobalState) =>
-  state.compositeStatusService &&
-  state.compositeStatusService.pricing &&
-  state.compositeStatusService.pricing.connectionStatus
-const selectPricingStatus = createSelector([getPricingStatus], serviceStatus => serviceStatus)
-
-const getExecutionStatus = (state: GlobalState) =>
-  state.compositeStatusService &&
-  state.compositeStatusService.execution &&
-  state.compositeStatusService.execution.connectionStatus
-const selectExecutionStatus = createSelector([getExecutionStatus], serviceStatus => serviceStatus)
-
-export { selectCurrencyPair, selectSpotTileData, selectExecutionStatus, selectPricingStatus }
+export { selectCurrencyPair, selectSpotTileData }
