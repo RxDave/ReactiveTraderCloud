@@ -3,11 +3,11 @@ import { ofType } from 'redux-observable'
 import { map, tap } from 'rxjs/operators'
 import Logic from 'Logic'
 import { REF_ACTION_TYPES, ReferenceActions } from 'rt-actions'
-import { ANALYTICS_ACTION_TYPES, AnalyticsActions } from '../actions'
-import { CurrencyPairPosition } from '../model'
-import { getModel } from '../model/AnalyticsLineChartModel'
-import { getPositionsChartModel } from '../model/positionsChartModel'
-import AnalyticsService from '../analyticsService'
+import { ANALYTICS_ACTION_TYPES, AnalyticsActions } from '../ui/analytics/actions'
+import { CurrencyPairPosition } from '../ui/analytics/model'
+import { getModel } from '../ui/analytics/model/AnalyticsLineChartModel'
+import { getPositionsChartModel } from '../ui/analytics/model/positionsChartModel'
+import AnalyticsService from '../ui/analytics/analyticsService'
 
 type SubscribeToAnalyticsAction = ReturnType<typeof AnalyticsActions.subcribeToAnalytics>
 type FetchAnalyticsAction = ReturnType<typeof AnalyticsActions.refreshAnalyticsUI>

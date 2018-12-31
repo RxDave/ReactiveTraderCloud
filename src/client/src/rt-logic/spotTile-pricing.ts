@@ -3,10 +3,10 @@ import { ofType } from 'redux-observable'
 import Logic from 'Logic'
 import { map, mergeMap, tap } from 'rxjs/operators'
 import { CurrencyPairMap } from 'rt-types'
-import { SpotTileActions, TILE_ACTION_TYPES } from '../actions'
-import { SpotPriceTick } from '../model/spotPriceTick'
-import PricingService from '../pricingService'
-import { createUpdateTradeDataOn } from './logic-spotTile'
+import { SpotTileActions, TILE_ACTION_TYPES } from '../ui/spotTile/actions'
+import { SpotPriceTick } from '../ui/spotTile/model/spotPriceTick'
+import PricingService from '../ui/spotTile/pricingService'
+import { createUpdateTradeDataOn } from './spotTile-core'
 
 type SubscribeToSpotTileAction = ReturnType<typeof SpotTileActions.subscribeToSpotTile>
 type PriceUpdateAction = ReturnType<typeof SpotTileActions.priceUpdateAction>

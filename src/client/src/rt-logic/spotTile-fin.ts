@@ -4,8 +4,8 @@ import { bindCallback, Observable, from } from 'rxjs'
 import Logic from 'Logic'
 import { CurrencyPair, Direction } from 'rt-types'
 import { filter, map, mergeMap, withLatestFrom, tap } from 'rxjs/operators'
-import { SpotTileActions, TILE_ACTION_TYPES } from '../actions'
-import { SpotTileData } from '../model/spotTileData'
+import { SpotTileActions, TILE_ACTION_TYPES } from '../ui/spotTile/actions'
+import { SpotTileData } from '../ui/spotTile/model/spotTileData'
 
 type ExecutedTradeAction = ReturnType<typeof SpotTileActions.tradeExecuted>
 type DisplayChartAction = ReturnType<typeof SpotTileActions.displayCurrencyChart>

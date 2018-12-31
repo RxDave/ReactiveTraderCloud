@@ -1,7 +1,7 @@
 import Logic from 'Logic'
-import { spotTileLogic } from './logic-spotTile'
-import { spotTileFinLogic } from './logic-spotTile-fin'
-import { pricingLogic } from './logic-pricing'
+import { spotTileLogic } from './spotTile-core'
+import { spotTileFinLogic } from './spotTile-fin'
+import { pricingLogic } from './spotTile-pricing'
 
 export const enabledLogic: Logic = function() {
   // TODO: The call to subscribe happens onMount, but it also carries data that the tile and pricing logic both require.

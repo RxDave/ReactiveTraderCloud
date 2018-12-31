@@ -5,11 +5,11 @@ import { delay, map, mergeMap } from 'rxjs/operators'
 import { ActionWithPayload } from 'rt-util'
 import Logic from 'Logic'
 import { GlobalState } from 'StoreTypes'
-import { SpotTileActions, TILE_ACTION_TYPES } from '../actions'
-import { SpotTileData } from '../model'
-import { ExecuteTradeRequest, ExecuteTradeResponse } from '../model/executeTradeRequest'
-import { PriceMovementTypes } from '../model/priceMovementTypes'
-import ExecutionService from '../executionService'
+import { SpotTileActions, TILE_ACTION_TYPES } from '../ui/spotTile/actions'
+import { SpotTileData } from '../ui/spotTile/model'
+import { ExecuteTradeRequest, ExecuteTradeResponse } from '../ui/spotTile/model/executeTradeRequest'
+import { PriceMovementTypes } from '../ui/spotTile/model/priceMovementTypes'
+import ExecutionService from '../ui/spotTile/executionService'
 
 type SubscribeToSpotTileAction = ReturnType<typeof SpotTileActions.subscribeToSpotTile>
 type DisplayCurrencyChartAction = ReturnType<typeof SpotTileActions.displayCurrencyChart>
@@ -59,12 +59,12 @@ export const spotTileLogic: Logic = function*(action$, state$, { loadBalancedSer
   yield updateTradeDataOn<ExecutionAction, ExecuteTradeRequest>(
     TILE_ACTION_TYPES.EXECUTE_TRADE,
     { isTradeExecutionInFlight: true },
-    payload => payload.CurrencyPair,
+    request => request.CurrencyPair,
   )
   yield updateTradeDataOn<ExecutedTradeAction, ExecuteTradeResponse>(
     TILE_ACTION_TYPES.TRADE_EXECUTED,
-    payload => ({ isTradeExecutionInFlight: false, lastTradeExecutionStatus: payload }),
-    payload => payload.request.CurrencyPair,
+    response => ({ isTradeExecutionInFlight: false, lastTradeExecutionStatus: response }),
+    response => response.request.CurrencyPair,
   )
 
   const limitCheck = (executeTradeRequest: ExecuteTradeRequest) =>
