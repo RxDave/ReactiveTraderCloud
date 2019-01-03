@@ -37,13 +37,13 @@ export const businessLogic: Logic = function*(action$, state$, { loadBalancedSer
   if (finEnabled) {
     yield action$.pipe(
       ofType<Action, FetchAnalyticsAction>(ANALYTICS_ACTION_TYPES.ANALYTICS_SERVICE),
-      map(action => action.payload.currentPositions.map(mapToDto)),
+      map(action => action.payload.currentPositions.map(finMapToDto)),
       tap(currentPositions => platform.interop!.publish('position-update', currentPositions)),
     )
   }
 }
 
-const mapToDto = (ccyPairPosition: CurrencyPairPosition) => ({
+const finMapToDto = (ccyPairPosition: CurrencyPairPosition) => ({
   symbol: ccyPairPosition.symbol,
   basePnl: ccyPairPosition.basePnl,
   baseTradedAmount: ccyPairPosition.baseTradedAmount,
